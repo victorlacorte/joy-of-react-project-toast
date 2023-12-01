@@ -1,13 +1,16 @@
 import React from "react";
 
 import Button from "../Button";
+import Toast from "../Toast/Toast";
 
 import styles from "./ToastPlayground.module.css";
 
-const variants = ["notice", "warning", "success", "error"];
+const toastVariants = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
+  const [variant, setVariant] = React.useState(toastVariants[0]);
+  const [isToastVisible, setIsToastVisible] = React.useState(false);
   const messageId = React.useId();
   const variantId = React.useId();
 
@@ -17,6 +20,16 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
+      {isToastVisible && (
+        <Toast
+          variant={variant}
+          onClose={() => {
+            setIsToastVisible(false);
+          }}
+        >
+          {message}
+        </Toast>
+      )}
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
           <label
@@ -40,23 +53,36 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label}>Variant</div>
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            {variants.map((variant) => (
-              <label htmlFor={`${variantId}-${variant}`}>
-                <input
-                  id={`${variantId}-${variant}`}
-                  type="radio"
-                  name="variant"
-                  value={variant}
-                />
-                {variant}
-              </label>
-            ))}
+            {toastVariants.map((toastVariant) => {
+              const id = `${variantId}-${toastVariant}`;
+              return (
+                <label key={id} htmlFor={id}>
+                  <input
+                    id={id}
+                    type="radio"
+                    name="variant"
+                    value={toastVariant}
+                    checked={variant === toastVariant}
+                    onChange={(event) => {
+                      setVariant(event.target.value);
+                    }}
+                  />
+                  {toastVariant}
+                </label>
+              );
+            })}
           </div>
         </div>
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button>Pop Toast!</Button>
+            <Button
+              onClick={() => {
+                setIsToastVisible(true);
+              }}
+            >
+              Pop Toast!
+            </Button>
           </div>
         </div>
       </div>
