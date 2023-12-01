@@ -1,12 +1,19 @@
 import React from "react";
 
-import Toast from "../Toast/Toast";
+import Toast from "../Toast";
+import useEscapeKey from "../../hooks/useEscapeKey";
 
 const ToastContext = React.createContext();
 export const useToastContext = () => React.useContext(ToastContext);
 
 function ToastProvider({ children }) {
   const [toasts, setToasts] = React.useState([]);
+
+  const handleCloseAll = React.useCallback(() => {
+    setToasts([]);
+  }, []);
+
+  useEscapeKey(handleCloseAll);
 
   const addToast = React.useCallback((variant, message) => {
     const id = crypto.randomUUID();
